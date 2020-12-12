@@ -34,7 +34,11 @@ players = {
       [61]=stir_right
       -- 63 is ctrl, 50 is return
     },
-    spr=257
+    state="walking",
+    animations={
+      idle={273},
+      walking={257,273,289}
+    }
   },
   lolek={
     name="Lolek",
@@ -46,7 +50,11 @@ players = {
       [4]=stir_right  -- D
       -- 49 is tab
     },
-    spr=258
+    state="idle",
+    animations={
+      idle={274},
+      walking={258,274,290}
+    }
   }
 }
 
@@ -54,21 +62,35 @@ level = {
   offset={x=8*6, y=0}
 }
 
-function draw_player(p)
-  spr(p.spr, p.x + level.offset.x, p.y + level.offset.y, 8)
+function mod(a,b)
+  return math.floor(math.fmod(a,b))
+end
+
+function draw_element(p)
+  local anim = p.animations[p.state]
+  local t = math.floor(time() / 150)
+  debug(t)
+  local frame = 1
+  if #anim > 1 then
+    frame = 1 + mod(t, #anim)
+  end
+  local sprite = anim[frame]
+  spr(sprite, p.x + level.offset.x, p.y + level.offset.y, 8)
 end
 
 function control_player(p)
-  local changed = false
+  local pressed = false
   for key_id, fun in pairs(p.controls) do
     if key(key_id) then
       fun(p)
-      changed = true
+      pressed = true
+      p.state = "walking"
     end
   end
-  if not changed then
+  if not pressed then
     p.dx = 0
     p.dy = 0
+    p.state = "idle"
   end
 end
 
@@ -96,8 +118,8 @@ function TIC()
   cls()
   map(0,0,30,17,0,0)
   --rectb(0,0,240,136,3)
-  draw_player(players.bolek)
-  draw_player(players.lolek)
+  draw_element(players.bolek)
+  draw_element(players.lolek)
 end
 
 -- <TILES>
@@ -121,6 +143,14 @@ end
 -- 034:8888888888000088802322088022220888000088802222088000000888800888
 -- 035:8888888888000088806566088066660888000088806666088000000888800888
 -- 036:888888888800008880dcdd0880dddd088800008880dddd088000000888800888
+-- 049:8888888888000088809b99088099990888000088809999088000000888888088
+-- 050:8888888888000088802322088022220888000088802222088000000888888088
+-- 051:8888888888000088806566088066660888000088806666088000000888888088
+-- 052:888888888800008880dcdd0880dddd088800008880dddd088000000888888088
+-- 065:8888888888000088809b99088099990888000088809999088000000888088888
+-- 066:8888888888000088802322088022220888000088802222088000000888088888
+-- 067:8888888888000088806566088066660888000088806666088000000888088888
+-- 068:888888888800008880dcdd0880dddd088800008880dddd088000000888088888
 -- </SPRITES>
 
 -- <MAP>
@@ -162,3 +192,4 @@ end
 -- <PALETTE>
 -- 000:1a1c2c5d275db13e53ef7d57ffcd75a7f07038b7642c717929366f3b5dc941a6f673eff7f4f4f494b0c2566c86333c57
 -- </PALETTE>
+
