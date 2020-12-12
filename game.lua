@@ -3,43 +3,51 @@
 -- desc:   short description
 -- script: lua
 
-function move_up(p)
-  p.y = p.y - p.speed
+function stir_up(p)
+  p.dy = -p.speed
+  p.dx = 0
 end
 
-function move_down(p)
-  p.y = p.y + p.speed
+function stir_down(p)
+  p.dy = p.speed
+  p.dx = 0
 end
 
-function move_left(p)
-  p.x = p.x - p.speed
+function stir_left(p)
+  p.dx = -p.speed
+  p.dy = 0
 end
 
-function move_right(p)
-  p.x = p.x + p.speed
+function stir_right(p)
+  p.dx = p.speed
+  p.dy = 0
 end
 
 players = {
-  bolek={name="Bolek";
-         x=0, y=0, speed=1;
-         controls={
-           [58]=move_up,
-           [59]=move_down,
-           [60]=move_left,
-           [61]=move_right
-           -- 63 is ctrl, 50 is return
-         },
-         spr=257},
-  lolek={name="Lolek",
-         x=32, y=32, speed=1;
-         controls={
-           [23]=move_up,   -- W
-           [19]=move_down, -- S
-           [1]=move_left,  -- A
-           [4]=move_right  -- D
-           -- 49 is tab
-         },
-         spr=258}
+  bolek={
+    name="Bolek";
+    x=0, y=0, dx=0, dy=0, speed=1;
+    controls={
+      [58]=stir_up,
+      [59]=stir_down,
+      [60]=stir_left,
+      [61]=stir_right
+      -- 63 is ctrl, 50 is return
+    },
+    spr=257
+  },
+  lolek={
+    name="Lolek",
+    x=32, y=32, dx=0, dy=0, speed=1;
+    controls={
+      [23]=stir_up,   -- W
+      [19]=stir_down, -- S
+      [1]=stir_left,  -- A
+      [4]=stir_right  -- D
+      -- 49 is tab
+    },
+    spr=258
+  }
 }
 
 level = {
@@ -50,12 +58,23 @@ function draw_player(p)
   spr(p.spr, p.x + level.offset.x, p.y + level.offset.y, 8)
 end
 
-function move_player(p)
+function control_player(p)
+  local changed = false
   for key_id, fun in pairs(p.controls) do
     if key(key_id) then
       fun(p)
+      changed = true
     end
   end
+  if not changed then
+    p.dx = 0
+    p.dy = 0
+  end
+end
+
+function update_player(p)
+  p.x = p.x + p.dx
+  p.y = p.y + p.dy
 end
 
 function debug(x)
@@ -68,12 +87,15 @@ function debug(x)
 end
 
 function TIC()
-  move_player(players.bolek)
-  move_player(players.lolek)
+  control_player(players.bolek)
+  control_player(players.lolek)
+
+  update_player(players.bolek)
+  update_player(players.lolek)
 
   cls()
   map(0,0,30,17,0,0)
-  rectb(0,0,240,136,3)
+  --rectb(0,0,240,136,3)
   draw_player(players.bolek)
   draw_player(players.lolek)
 end
