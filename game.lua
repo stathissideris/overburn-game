@@ -43,7 +43,7 @@ players = {
   },
   lolek={
     name="Lolek",
-    x=32, y=32, dx=0, dy=0, speed=1;
+    x=32, y=32, dx=0, dy=0, speed=0.8;
     controls={
       [23]=stir_up,   -- W
       [19]=stir_down, -- S
