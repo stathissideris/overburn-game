@@ -4,33 +4,29 @@
 -- script: lua
 
 function stir_up(p)
-  p.dy = -p.speed
-  p.dx = 0
+  p.dx,p.dy = 0,-p.speed
   p.state = "walking_ver"
 end
 
 function stir_down(p)
-  p.dy = p.speed
-  p.dx = 0
+  p.dx,p.dy = 0,p.speed
   p.state = "walking_ver"
 end
 
 function stir_left(p)
-  p.dx = -p.speed
-  p.dy = 0
+  p.dx,p.dy = -p.speed,0
   p.state = "walking_hor"
 end
 
 function stir_right(p)
-  p.dx = p.speed
-  p.dy = 0
+  p.dx,p.dy = p.speed,0
   p.state = "walking_hor"
 end
 
 players = {
   bolek={
     name="Bolek";
-    x=0, y=0, dx=0, dy=0, speed=1;
+    x=0, y=0, dx=0, dy=0, speed=0.8;
     controls={
       [58]=stir_up,
       [59]=stir_down,
