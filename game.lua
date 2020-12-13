@@ -89,6 +89,33 @@ function draw_element(p)
   spr(sprite, p.x + level.offset.x, p.y + level.offset.y, 8)
 end
 
+blast_tile_center = {262, 278, 294, 278, 262}
+blast_tile_arm = {263, 279, 295, 279, 263}
+blast_tile_last = {264, 280, 296, 280, 264}
+function draw_blast(tx, ty, length, phase)
+  center = blast_tile_center[phase]
+  arm = blast_tile_arm[phase]
+  last = blast_tile_last[phase]
+
+  -- center
+  spr(center, tx*8+level.offset.x, ty*8+level.offset.y, 8)
+
+  -- arms
+  -- TODO arms may need to be cut short if they reach an obstacle, but ignore for now
+  for v=1,length-1 do
+    spr(arm, (tx + v)*8+level.offset.x, ty*8+level.offset.y, 8)
+    spr(arm, (tx - v)*8+level.offset.x, ty*8+level.offset.y, 8, 1, 1)
+    spr(arm, tx*8+level.offset.x, (ty + v)*8+level.offset.y, 8, 1, 0, 1)
+    spr(arm, tx*8+level.offset.x, (ty - v)*8+level.offset.y, 8, 1, 0, 3)
+  end
+
+  -- the "ends" of the blast
+  spr(last, (tx + length)*8+level.offset.x, ty*8+level.offset.y, 8)
+  spr(last, (tx - length)*8+level.offset.x, ty*8+level.offset.y, 8, 1, 1)
+  spr(last, tx*8+level.offset.x, (ty + length)*8+level.offset.y, 8, 1, 0, 1)
+  spr(last, tx*8+level.offset.x, (ty - length)*8+level.offset.y, 8, 1, 0, 3)
+end
+
 function control_player(p)
   local pressed = false
   for key_id, fun in pairs(p.controls) do
@@ -131,6 +158,7 @@ function TIC()
   draw_element(players.bolek)
   draw_element(players.lolek)
   draw_element(bombs[1])
+  draw_blast(8,4,2,3)
 end
 
 -- <TILES>
@@ -215,4 +243,3 @@ end
 -- <PALETTE>
 -- 000:1a1c2c5d275db13e53ef7d57beba48e2e25d38b7642c717929366f3b5dc941a6f673eff7f4f4f494b0c2566c86333c57
 -- </PALETTE>
-
