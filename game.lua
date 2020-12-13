@@ -78,6 +78,16 @@ function mod(a,b)
   return math.floor(math.fmod(a,b))
 end
 
+-- convert tile x to screen x
+function sx(tx)
+  return tx*8 + level.offset.x
+end
+
+-- convert tile y to screen y
+function sy(ty)
+  return ty*8 + level.offset.y
+end
+
 function draw_element(p)
   local anim = p.animations[p.state]
   local t = math.floor(time() / 150)
@@ -103,17 +113,17 @@ function draw_blast(tx, ty, length, phase)
   -- arms
   -- TODO arms may need to be cut short if they reach an obstacle, but ignore for now
   for v=1,length-1 do
-    spr(arm, (tx + v)*8+level.offset.x, ty*8+level.offset.y, 8)
-    spr(arm, (tx - v)*8+level.offset.x, ty*8+level.offset.y, 8, 1, 1)
-    spr(arm, tx*8+level.offset.x, (ty + v)*8+level.offset.y, 8, 1, 0, 1)
-    spr(arm, tx*8+level.offset.x, (ty - v)*8+level.offset.y, 8, 1, 0, 3)
+    spr(arm, sx(tx + v), sy(ty), 8)
+    spr(arm, sx(tx - v), sy(ty), 8, 1, 1)
+    spr(arm, sx(tx),     sy(ty + v), 8, 1, 0, 1)
+    spr(arm, sx(tx),     sy(ty - v), 8, 1, 0, 3)
   end
 
   -- the "ends" of the blast
-  spr(last, (tx + length)*8+level.offset.x, ty*8+level.offset.y, 8)
-  spr(last, (tx - length)*8+level.offset.x, ty*8+level.offset.y, 8, 1, 1)
-  spr(last, tx*8+level.offset.x, (ty + length)*8+level.offset.y, 8, 1, 0, 1)
-  spr(last, tx*8+level.offset.x, (ty - length)*8+level.offset.y, 8, 1, 0, 3)
+  spr(last, sx(tx + length), sy(ty), 8)
+  spr(last, sx(tx - length), sy(ty), 8, 1, 1)
+  spr(last, sx(tx),          sy(ty + length), 8, 1, 0, 1)
+  spr(last, sx(tx),          sy(ty - length), 8, 1, 0, 3)
 end
 
 function control_player(p)
@@ -158,7 +168,7 @@ function TIC()
   draw_element(players.bolek)
   draw_element(players.lolek)
   draw_element(bombs[1])
-  draw_blast(8,4,2,3)
+  draw_blast(8,4,3,3)
 end
 
 -- <TILES>
@@ -243,3 +253,4 @@ end
 -- <PALETTE>
 -- 000:1a1c2c5d275db13e53ef7d57beba48e2e25d38b7642c717929366f3b5dc941a6f673eff7f4f4f494b0c2566c86333c57
 -- </PALETTE>
+
