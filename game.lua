@@ -6,21 +6,25 @@
 function stir_up(p)
   p.dy = -p.speed
   p.dx = 0
+  p.state = "walking_ver"
 end
 
 function stir_down(p)
   p.dy = p.speed
   p.dx = 0
+  p.state = "walking_ver"
 end
 
 function stir_left(p)
   p.dx = -p.speed
   p.dy = 0
+  p.state = "walking_hor"
 end
 
 function stir_right(p)
   p.dx = p.speed
   p.dy = 0
+  p.state = "walking_hor"
 end
 
 players = {
@@ -34,10 +38,11 @@ players = {
       [61]=stir_right
       -- 63 is ctrl, 50 is return
     },
-    state="walking",
+    state="idle",
     animations={
       idle={273},
-      walking={257,273,289}
+      walking_hor={257,273,289},
+      walking_ver={305,321}
     }
   },
   lolek={
@@ -53,7 +58,8 @@ players = {
     state="idle",
     animations={
       idle={274},
-      walking={258,274,290}
+      walking_hor={258,274,290},
+      walking_ver={306,322}
     }
   }
 }
@@ -69,7 +75,6 @@ end
 function draw_element(p)
   local anim = p.animations[p.state]
   local t = math.floor(time() / 150)
-  debug(t)
   local frame = 1
   if #anim > 1 then
     frame = 1 + mod(t, #anim)
@@ -84,7 +89,6 @@ function control_player(p)
     if key(key_id) then
       fun(p)
       pressed = true
-      p.state = "walking"
     end
   end
   if not pressed then
@@ -192,4 +196,3 @@ end
 -- <PALETTE>
 -- 000:1a1c2c5d275db13e53ef7d57ffcd75a7f07038b7642c717929366f3b5dc941a6f673eff7f4f4f494b0c2566c86333c57
 -- </PALETTE>
-
