@@ -60,6 +60,16 @@ players = {
   }
 }
 
+bombs = {
+  {
+    x=16, y=0,
+    state="countdown",
+    animations={
+      countdown={256, 272}
+    }
+  }
+}
+
 level = {
   offset={x=8*6, y=0}
 }
@@ -120,6 +130,7 @@ function TIC()
   --rectb(0,0,240,136,3)
   draw_element(players.bolek)
   draw_element(players.lolek)
+  draw_element(bombs[1])
 end
 
 -- <TILES>
